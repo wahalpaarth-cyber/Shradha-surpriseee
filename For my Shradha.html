@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>For Shradha ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&family=Sacramento&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        body {
+            margin: 0; padding: 0;
+            background: linear-gradient(135deg, #fad0c4 0%, #ffd1ff 100%);
+            height: 100vh; overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        .bg-hearts { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; z-index: -1; }
+        .heart-bg { position: absolute; color: rgba(255, 255, 255, 0.7); animation: floatUp linear infinite; bottom: -50px; }
+        @keyframes floatUp { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; } }
+
+        .card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            width: 90%; max-width: 380px;
+            height: 85vh; position: relative;
+            padding: 20px; text-align: center;
+            display: flex; flex-direction: column; justify-content: space-between; align-items: center;
+            border: 2px solid white;
+        }
+
+        .slide { display: none; width: 100%; height: 100%; flex-direction: column; justify-content: center; align-items: center; animation: fadeIn 0.5s ease; }
+        .active { display: flex; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        h1 { font-family: 'Dancing Script', cursive; color: #ff3366; font-size: 2.2rem; margin: 10px; }
+        .big-text { font-family: 'Sacramento', cursive; font-size: 3.2rem; color: #d63384; margin-bottom: 10px; line-height: 1.1; }
+        
+        .btn {
+            background: linear-gradient(to right, #ff758c, #ff7eb3);
+            color: white; padding: 12px 30px; border: none; border-radius: 50px;
+            font-weight: 600; cursor: pointer; transition: 0.3s; z-index: 1000;
+        }
+
+        /* --- ENVELOPE FIX --- */
+        .env-wrapper {
+            position: relative; width: 260px; height: 150px;
+            background: #ff4d6d; border-radius: 0 0 10px 10px;
+            margin: 40px 0; cursor: pointer; z-index: 10;
+        }
+        .env-wrapper::before { /* Sides */
+            content: ''; position: absolute; top: 0; left: 0; width: 0; height: 0;
+            border-left: 130px solid #ff3355; border-right: 130px solid #ff3355;
+            border-top: 75px solid transparent; border-bottom: 75px solid transparent;
+            z-index: 20; border-radius: 10px;
+        }
+        .env-wrapper::after { /* Bottom flap */
+            content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 0;
+            border-left: 130px solid transparent; border-right: 130px solid transparent;
+            border-bottom: 80px solid #ff8fa3; z-index: 21; border-radius: 0 0 10px 10px;
+        }
+        .flap {
+            position: absolute; top: 0; left: 0; width: 0; height: 0;
+            border-left: 130px solid transparent; border-right: 130px solid transparent;
+            border-top: 80px solid #ff0040; transform-origin: top; transition: 0.4s; z-index: 25;
+        }
+        .letter {
+            position: absolute; top: 5px; left: 10px; right: 10px;
+            background: white; border-radius: 5px; padding: 15px;
+            text-align: left; font-size: 0.85rem; border: 1px dashed #ff3355;
+            transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            z-index: 15; opacity: 0; height: 260px; overflow-y: auto;
+        }
+        /* Open State */
+        .open .flap { transform: rotateX(180deg); z-index: 5; }
+        .open .letter { transform: translateY(-130px); opacity: 1; z-index: 500; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+
+        .hero-img { width: 160px; height: 160px; border-radius: 50%; object-fit: cover; border: 5px solid white; margin-bottom: 10px; }
+        
+        /* YES/NO BUTTON AREA */
+        .btn-container { position: relative; width: 100%; height: 160px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .yes-btn { background: #ff0055; font-size: 1.5rem; padding: 15px 45px; animation: pulse 1.5s infinite; }
+        .no-btn { position: absolute; background: #ddd; color: #555; padding: 8px 15px; border-radius: 20px; font-size: 0.8rem; top: 110px; transition: 0.2s; }
+        
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.08); } 100% { transform: scale(1); } }
+
+        .gallery { display: flex; overflow-x: auto; width: 100%; gap: 10px; padding: 15px 0; scrollbar-width: none; }
+        .gallery::-webkit-scrollbar { display: none; }
+        .gallery img { flex: 0 0 220px; height: 320px; object-fit: cover; border-radius: 15px; border: 4px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+
+    <audio id="bgMusic" preload="auto">
+        <source src="song.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="bg-hearts" id="hearts"></div>
+
+    <div class="card">
+        
+        <div id="s1" class="slide active">
+            <h1 class="big-text">HAPPY<br>PROPOSE DAY</h1>
+            <img src="https://i.ibb.co/yFVtCm0h/IMG-1572.jpg" class="hero-img">
+            <h1>For Shradha ❤️</h1>
+            <p>I have something for you...</p>
+            <button class="btn" onclick="startEverything()">Open Surprise 🎵</button>
+        </div>
+
+        <div id="s2" class="slide">
+            <h1>A Special Note ✨</h1>
+            <div class="env-wrapper" id="mainEnv" onclick="this.classList.toggle('open')">
+                <div class="flap"></div>
+                <div class="letter">
+                    <p><b>Hey Shradha demure,</b></p>
+                    <p>You have been a very special part of my life, one of my beautiful memories. You are the person I adore the most.</p>
+                    <p>We share a very common vibe and we are just made for each other type person. Mujhe lagta hai, feel hota hai.</p>
+                    <p>I just want to say that you are my everything, my love.</p>
+                    <p style="color: #d63384; font-weight: bold; font-size: 1rem;">I love youuuuu very much baby girl 🥹💕🧿</p>
+                </div>
+            </div>
+            <p style="margin-top: 40px;">(Tap the envelope to read)</p>
+            <button class="btn" onclick="next(3)">Next &rarr;</button>
+        </div>
+
+        <div id="s3" class="slide">
+            <h1 style="font-size: 4rem;">💍</h1>
+            <h1 class="big-text">Will you be mine ?</h1>
+            <div class="btn-container">
+                <button class="btn yes-btn" onclick="celebrate()">YES! 😍</button>
+                <button id="noBtn" class="btn no-btn" onmouseover="moveNo()" ontouchstart="moveNo()">No</button>
+            </div>
+        </div>
+
+        <div id="s4" class="slide">
+            <img src="https://media.giphy.com/media/26BRv0ThflsHCqDrG/giphy.gif" style="width: 85%; border-radius: 20px; border: 4px solid white;">
+            <h1 class="big-text">YIPPYYYY! 🎉</h1>
+            <p>I knew you'd say yes! <br> You just made my day more beautiful 🧿</p>
+            <button class="btn" onclick="next(5)">Our Memories &rarr;</button>
+        </div>
+
+        <div id="s5" class="slide">
+            <h1>Us Forever 📸</h1>
+            <div class="gallery">
+                <img src="https://i.ibb.co/yFVtCm0h/IMG-1572.jpg">
+                <img src="https://i.ibb.co/bRv8MH9g/IMG-1448.jpg">
+                <img src="https://i.ibb.co/j9zCJwMK/IMG-9815.jpg">
+                <img src="https://i.ibb.co/hJv37Bh2/IMG-9536.jpg">
+                <img src="https://i.ibb.co/8gWcShv1/IMG-6527.jpg">
+                <img src="https://i.ibb.co/VcDR9Vtd/IMG-6301.jpg">
+            </div>
+            <p>Swipe to see our moments 💕</p>
+            <button class="btn" onclick="next(1)">Back to Start</button>
+        </div>
+
+    </div>
+
+    <script>
+        // FORCED AUDIO START
+        function startEverything() {
+            const audio = document.getElementById("bgMusic");
+            audio.play().then(() => {
+                console.log("Playing!");
+            }).catch(e => {
+                // Fallback for some mobile browsers
+                audio.muted = false;
+                audio.play();
+            });
+            next(2);
+        }
+
+        function next(id) {
+            document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+            document.getElementById('s' + id).classList.add('active');
+        }
+
+        function moveNo() {
+            const btn = document.getElementById('noBtn');
+            const x = Math.random() * 200 - 100;
+            const y = Math.random() * 120 - 60;
+            btn.style.transform = `translate(${x}px, ${y}px)`;
+        }
+
+        function celebrate() {
+            next(4);
+            var end = Date.now() + (5 * 1000);
+            (function frame() {
+                confetti({ particleCount: 4, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#ff3366', '#ffffff'] });
+                confetti({ particleCount: 4, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#ff3366', '#ffffff'] });
+                if (Date.now() < end) { requestAnimationFrame(frame); }
+            }());
+        }
+
+        function createHearts() {
+            const container = document.getElementById('hearts');
+            for(let i=0; i<20; i++){
+                let heart = document.createElement('div');
+                heart.className = 'heart-bg';
+                heart.innerHTML = '❤️';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = (Math.random() * 3 + 4) + 's';
+                heart.style.fontSize = '20px';
+                container.appendChild(heart);
+            }
+        }
+        createHearts();
+    </script>
+</body>
+</html>
